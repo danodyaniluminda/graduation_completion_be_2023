@@ -15,11 +15,14 @@ public class Program {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
-//
-//    @Column(name = "program_id")
-//    private Long programId;
 
     @Column(name = "program_name")
     private String programName;
+
+    @Column(name = "academic_duration")
+    private String academicDuration;
+
+    @Column(name = "program_of_study")
+    private Integer programOfStudy;
 
 }
