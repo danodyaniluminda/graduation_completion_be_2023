@@ -4,6 +4,9 @@ package com.ousl.graduation_completion.controller;
 
 
 import com.ousl.graduation_completion.dto.DataObject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -15,9 +18,20 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/data")
 public class TestController {
+
+    @PersistenceContext
+    EntityManager em;
     @GetMapping("/getName")
     public String getname(){
         return "pramod";
+    }
+
+    @GetMapping("/checkCntCourse")
+    public List<Object[]> checkCntCourse(@RequestParam("id") Integer progid){
+        String sql = "select distinct course_id, application_id from student where course_type= 3 and program_id = "+progid+" and valid=false  and course_id not in (select program_cnt_courses.course_id from program_cnt_courses where program_cnt_courses.program_id="+progid+" )";
+        Query query = em.createNativeQuery(sql);
+        List<Object[]> results = query.getResultList();
+        return results;
     }
 
     @GetMapping("/filter")
