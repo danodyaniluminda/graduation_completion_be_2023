@@ -15,9 +15,9 @@ public class Program {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @Column(name = "program_id")
-    private Long programId;
+//
+//    @Column(name = "program_id")
+//    private Long programId;
 
     @Column(name = "program_name")
     private String programName;
