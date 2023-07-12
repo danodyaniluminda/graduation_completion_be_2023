@@ -17,6 +17,6 @@ public class CourseType {
     private Long id;
 
     @Column(name = "course_type_name")
-    private Integer courseTypeName;
+    private String courseTypeName;
 
 }
