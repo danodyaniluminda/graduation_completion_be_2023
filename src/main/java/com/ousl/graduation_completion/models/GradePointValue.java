@@ -7,14 +7,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "subject")
-public class Subject {
+@Table(name = "grade_point_value")
+public class GradePointValue {
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "subject_name")
-    private String subjectName;
+    @Column(name = "garde")
+    private String garde;
+
+    @Column(name = "garde_point")
+    private Double gardePoint;
 
 }
