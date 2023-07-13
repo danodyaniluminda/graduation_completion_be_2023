@@ -13,14 +13,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/graduation-completion/sample")
 public class sampleController {
-//    @GetMapping(value = "/get_list")
-//    public List<?> getAllCountries() throws JsonProcessingException {
-//        List list = new ArrayList();
-//        list.add('fds');
-//        return List.of();
-//    }
     @GetMapping(value = "/get_list")
-    public String getName(){
-        return "Ja";
+    public List<?> getAllCountries()  {
+
+        return null;
     }
+
 }

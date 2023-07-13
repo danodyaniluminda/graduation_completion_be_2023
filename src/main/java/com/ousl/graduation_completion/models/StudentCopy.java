@@ -1,6 +1,9 @@
 package com.ousl.graduation_completion.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +12,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "student")
-public class Student {
+@Table(name = "student_copy")
+public class StudentCopy {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
@@ -18,9 +21,8 @@ public class Student {
     @Column(name = "application_id")
     private Long applicationId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "program_id")
-    private Program program;
+    @Column(name = "program_id")
+    private Long programId;
 
     @Column(name = "subject_id")
     private Long subjectId;
@@ -31,11 +33,8 @@ public class Student {
     @Column(name = "course_type")
     private Long courseType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grade_map_id")
-    private Grade grade;
-//    @Column(name = "grade_point_id")
-//    private String grade;
+    @Column(name = "grade")
+    private Integer grade;
 
     @Column(name = "level")
     private Integer level;
@@ -48,5 +47,11 @@ public class Student {
 
     @Column(name = "create_date")
     private Instant createDate;
+
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    @Column(name = "grade_point_id")
+    private Integer gradePointId;
 
 }
