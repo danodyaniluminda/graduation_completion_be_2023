@@ -10,19 +10,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "program")
-public class Program {
+@Table(name = "completion_module_tables")
+public class CompletionModuleTable {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "program_name")
-    private String programName;
-
-//    @Column(name = "academic_duration")
-//    private String academicDuration;
-//
-//    @Column(name = "program_of_study")
-//    private Integer programOfStudy;
+    @Column(name = "table_name")
+    private String tableName;
 
 }
