@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class DataObject {
-    private String id;
+    private String message;
+    private Object data;
 }
