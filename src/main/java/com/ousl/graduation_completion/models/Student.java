@@ -31,8 +31,8 @@ public class Student {
     @Column(name = "course_type")
     private Long courseType;
 
-    @Column(name = "grade")
-    private Integer grade;
+    //@Column(name = "grade")
+    //private Integer grade;
 
     @Column(name = "level")
     private Integer level;
