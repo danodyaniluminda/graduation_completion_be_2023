@@ -5,6 +5,8 @@ package com.ousl.graduation_completion.controller;
 
 import com.ousl.graduation_completion.dto.ContinueCourseDTO;
 import com.ousl.graduation_completion.dto.DataObject;
+import com.ousl.graduation_completion.models.Program;
+import com.ousl.graduation_completion.repository.ProgramRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -14,6 +16,7 @@ import org.apache.poi.ss.formula.EvaluationWorkbook;
 import org.apache.poi.ss.formula.udf.UDFFinder;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +34,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/data")
 public class TestController {
+@Autowired
+ProgramRepository programRepository;
 
     @PersistenceContext
     EntityManager em;
-    @GetMapping("/getName")
-    public String getname(){
-        return "pramod";
+    @GetMapping("/getAllProgrammes")
+    public List<Program> getAllProgramme(){
+    List<Program> programs = programRepository.findAll();
+        return programs;
     }
 
 //    @Transactional
