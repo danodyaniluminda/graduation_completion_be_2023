@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface RegularCourseCreditCheckerService {
     List<String> checkCoursesNeedToBeConverted(Long programId);
-    HashMap<String, Object> checkRegularCourseCredits(Long applicationId, Long programId,Integer level, Integer noOfCreditsRequired);
+    HashMap<String, Object> checkRegularCourseCredits(Long programId,Integer level, Integer noOfCreditsRequired);
 }
