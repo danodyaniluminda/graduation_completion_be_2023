@@ -13,6 +13,7 @@ public interface ProgramCriterionRepository extends JpaRepository<ProgramCriteri
     ProgramCriterion getProgramCriterionByProgramAndActive(Program program,Boolean b);
 
     ProgramCriterion getProgramCriterionBySequenceIdAndProgram(Long l,Program program);
+    List<ProgramCriterion> findByProgramIdOrderBySequenceIdAsc(Long id);
 
     Optional<ProgramCriterion> getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(Long programId, boolean b, Long criteriaId);
 }
