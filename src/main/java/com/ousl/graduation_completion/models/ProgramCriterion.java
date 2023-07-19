@@ -24,4 +24,7 @@ public class ProgramCriterion {
     @Column(name = "sequence_id")
     private Long sequenceId;
 
+    @Column(name = "active")
+    private Boolean active;
+
 }
