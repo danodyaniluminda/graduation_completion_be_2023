@@ -37,8 +37,9 @@ public class Student {
     @Column(name = "course_type")
     private Long courseType;
 
-    //@Column(name = "grade")
-    //private Integer grade;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_map_id")
+    private Grade grade;
 
     @Column(name = "level")
     private Integer level;
