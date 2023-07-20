@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface OptionalCourseCreditCheckerService {
-    List<Object[]> checkCoursesNeedToBeConverted(Integer programId);
-    HashMap<String, Object> checkRegularCourseCredits(Long applicationId, Long programId, Integer level, Integer noOfCreditsRequired);
+    List<?> checkCoursesNeedToBeConvertedLevelThree(Integer programId);
+    HashMap<String, Object> checkOpenElectiveCourseLevelThree(Long programId);
 
 }
