@@ -19,6 +19,9 @@ public class Program {
     @Column(name = "program_name")
     private String programName;
 
+    @Column(name = "pro_type")
+    private String programType;
+
 //    @Column(name = "academic_duration")
 //    private String academicDuration;
 //
