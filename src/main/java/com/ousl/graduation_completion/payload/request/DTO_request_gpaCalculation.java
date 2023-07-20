@@ -8,8 +8,5 @@ import java.security.PrivateKey;
 @Getter
 @Setter
 public class DTO_request_gpaCalculation {
-    private Integer programmeId;
-    private Integer applicationId;
-//    private Integer credit;
-//    private Boolean valid;
+    private Long programId;
 }

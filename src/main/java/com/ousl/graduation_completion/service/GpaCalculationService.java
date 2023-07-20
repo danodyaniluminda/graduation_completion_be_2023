@@ -1,14 +1,10 @@
 package com.ousl.graduation_completion.service;
 
-import com.ousl.graduation_completion.payload.request.DTO_request_gpaCalculation;
-import com.ousl.graduation_completion.payload.response.DTO_response_gpaCalculation;
-
-import java.util.List;
+import java.util.HashMap;
 
 public interface GpaCalculationService {
 
-    List<DTO_response_gpaCalculation> gpaCalculations(DTO_request_gpaCalculation dtoRequestGpaCalculation);
-
+    HashMap<String, Object> gpaCalculations(Long programId);
 
 
 }
