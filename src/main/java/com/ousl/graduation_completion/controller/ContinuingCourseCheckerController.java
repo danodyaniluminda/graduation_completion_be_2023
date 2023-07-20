@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("api/graduation-completion/gpa_calculation")
+@RequestMapping("api/graduation-completion/continuingCourse")
 public class ContinuingCourseCheckerController {
     @Autowired
     ContinuingCourseCheckerServiceImpl continuingCourseCheckerService;

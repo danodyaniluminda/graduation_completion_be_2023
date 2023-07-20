@@ -37,6 +37,7 @@ public class ContinuingCourseCheckerServiceImpl implements ContinuingCourseCheck
                 dataItems.add(dataItem);
             }
             dataObject.setMessage("some courses are not valid");
+            dataObject.setStatus("NOT_MATCH");
             dataObject.setData(dataItems);
         } else {
             String sql1 = "update student set valid=true where course_type=3 and program_id = " + progid + " and  valid=false and course_id in (select program_cnt_courses.course_id from program_cnt_courses where program_cnt_courses.program_id=" + progid + " )";
@@ -44,6 +45,7 @@ public class ContinuingCourseCheckerServiceImpl implements ContinuingCourseCheck
             int updatedCount = query1.executeUpdate();
             System.out.println("update count " + updatedCount);
             dataObject.setMessage("All the Continue Courses are Considered");
+            dataObject.setStatus("SUCCESS");
         }
 
         return dataObject;
