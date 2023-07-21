@@ -5,4 +5,6 @@ import java.util.HashMap;
 public interface GradeCalculationLevelThreeToFiveService {
 
     HashMap<String,Object> gradeCalculationLevelThree(Long programId);
+
+    HashMap<String,Object> gradeCalculationLevelFour(Long programId);
 }

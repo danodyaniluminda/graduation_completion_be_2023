@@ -23,7 +23,7 @@ import java.util.Optional;
 public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalculationLevelThreeToFiveService {
     @PersistenceContext
     EntityManager em;
-    Logger logger = LoggerFactory.getLogger(OptionalCourseCreditCheckerServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(GenerateResultServiceImpl.class);
 
     @Autowired
     RuleLogRepository ruleLogRepository;
@@ -110,20 +110,91 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
     }
 
 
-    private void updateRuleLog(Student student, Program program) {
+    public HashMap<String, Object> gradeCalculationLevelFour(Long programId) {
+        HashMap<String, Object> response = new HashMap<>();
         try {
-            RuleLog ruleLog = new RuleLog();
-            ruleLog.setStudent(student);
-            ruleLog.setProgram(program);
-            ruleLog.setLog("");
-            ruleLogRepository.save(ruleLog);
-            logger.info("Success ! updated Rule Log");
+
+            Optional<ProgramCriterion> programCriterion = programCriterionRepository.getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(programId, true, 3L);
+
+            if (programCriterion.isPresent()) {
+
+
+            /*
+            Insert data to student_failed_criteria_detail table,
+            This quary for S1 or NS2 sylabus
+            if student have (level 4 course 27 credits) in 164 -  Bachelor of Science program
+             */
+                String LevelThreeGrade =
+                        "INSERT INTO student_failed_criteria_detail (program_id, student_id, criteria_id, status, details,created_by) \n" +
+                                "SELECT program_id, application_id, 5,\n" +
+                                "       CASE\n" +
+                                "           WHEN application_id IN (SELECT DISTINCT s.application_id\n" +
+                                "                                   FROM student s\n" +
+                                "                                   WHERE s.valid = true\n" +
+                                "                                     AND s.level = 3\n" +
+                                "                                     AND s.grade_map_id > 5\n" +
+                                "                                     AND course_type <> 3\n" +
+                                "                                     AND s.program_id = 164\n" +
+                                "                                   GROUP BY s.application_id\n" +
+                                "                                   HAVING SUM(s.credit) >= 27)\n" +
+                                "               THEN 'pass'\n" +
+                                "           ELSE 'fail'\n" +
+                                "           END,\n" +
+                                "              CASE\n" +
+                                "           WHEN application_id IN (SELECT DISTINCT s.application_id\n" +
+                                "                                   FROM student s\n" +
+                                "                                   WHERE s.valid = true\n" +
+                                "                                     AND s.level = :level\n" +
+                                "                                     AND s.grade_map_id > 5\n" +
+                                "                                     AND course_type <> 3\n" +
+                                "                                     AND s.program_id = :programId\n" +
+                                "                                   GROUP BY s.application_id\n" +
+                                "                                   HAVING SUM(s.credit) >= 27)\n" +
+                                "               THEN 'Have Level 4, 27 C passes'\n" +
+                                "           ELSE 'No Level 4 simple passes for 27 credits'\n" +
+                                "           END,\n" +
+                                "       1\n" +
+                                "FROM student s\n" +
+                                "WHERE s.program_id = :programId AND s.level = :level\n" +
+                                "GROUP BY s.application_id, s.program_id";
+                Query query = em.createNativeQuery(LevelThreeGrade);
+                query.setParameter("programId", programId);
+                query.setParameter("level", 4);
+                int upCount1 = query.executeUpdate();
+                logger.info("Success ! Level 4 27 C passes credit count was checked. " + upCount1 + " number of rows were updated");
+                response.put("message", "success");
+                response.put("rows were Updated", upCount1);
+
+
+                Program program = programRepository.findById(programId).orElse(null);
+                updateProgramSequence(program);
+
+                return response;
+
+            }
+            response.put("message", "Already updated.");
+            return response;
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("Error ! update Rule Log " + e.getMessage());
+            logger.error("Error! " + e.getMessage());
+            return response;
         }
     }
+//    private void updateRuleLog(Student student, Program program) {
+//        try {
+//            RuleLog ruleLog = new RuleLog();
+//            ruleLog.setStudent(student);
+//            ruleLog.setProgram(program);
+//            ruleLog.setLog("");
+//            ruleLogRepository.save(ruleLog);
+//            logger.info("Success ! updated Rule Log");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            logger.info("Error ! update Rule Log " + e.getMessage());
+//        }
+//    }
 
     private void updateProgramSequence(Program program) {
         try {
