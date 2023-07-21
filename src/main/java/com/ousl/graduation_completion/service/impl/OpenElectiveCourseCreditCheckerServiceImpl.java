@@ -421,7 +421,7 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
             List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteriaAndStatusAndProgram(criterion, status, program);
             for (StudentFailedCriteriaDetail student : getInsertedStudents) {
                 RuleLog ruleLog = new RuleLog();
-                ruleLog.setStudent(student.getStudent().getApplicationId());
+                ruleLog.setStudent(student.getStudent());
                 ruleLog.setProgram(student.getProgram());
                 ruleLog.setLog("Level " + level + " " + criterion.getCriteriaName() + " checked");
                 ruleLogRepository.save(ruleLog);
