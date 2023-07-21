@@ -22,6 +22,8 @@ public class Program {
     @Column(name = "pro_type")
     private String programType;
 
+    @Column(name = "program_code")
+    private String programCode;
 //    @Column(name = "academic_duration")
 //    private String academicDuration;
 //
