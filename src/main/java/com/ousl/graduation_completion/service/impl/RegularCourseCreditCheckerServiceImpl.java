@@ -64,12 +64,14 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
                 String jsonText = (String) level3CreditRegularCheckerQuery.getSingleResult();
                 JsonObject result = new Gson().fromJson(jsonText, JsonObject.class);
                 response.put("allApplicationIds", result.get("allApplicationIds"));
-                response.put("credits24ApplicationIds", result.get("credits24ApplicationIds"));
-                response.put("creditsGreater24ApplicationIds", result.get("creditsGreater24ApplicationIds"));
+                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIds", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIds"));
+                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIds", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIds"));
+                response.put("totalCreditsLessThanRequiredCreditsApplicationIds", result.get("totalCreditsLessThanRequiredCreditsApplicationIds"));
                 response.put("allApplicationIdsCount", result.get("allApplicationIdsCount"));
-                response.put("allApplicationIds", result.get("allApplicationIds"));
-                response.put("credits24ApplicationIdsCount", result.get("credits24ApplicationIdsCount"));
-                response.put("creditsGreater24ApplicationIdsCount", result.get("creditsGreater24ApplicationIdsCount"));
+                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount"));
+                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount"));
+                response.put("totalCreditsLessThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsLessThanRequiredCreditsApplicationIdsCount"));
+                response.put("allApplications", result.get("allApplications"));
                 //https://stackoverflow.com/questions/61169128/could-not-write-json-jsonobject-nested-exception-is-com-fasterxml-jackson-data
             }
 
