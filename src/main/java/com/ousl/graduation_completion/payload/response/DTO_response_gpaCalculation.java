@@ -6,9 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DTO_response_gpaCalculation {
-    private Integer programme_id;
-    private Integer application_id;
+    private Long program_id;
+    private Long student_id;
     private Double gpa;
-
 
 }

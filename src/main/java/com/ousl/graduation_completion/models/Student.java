@@ -1,13 +1,8 @@
 package com.ousl.graduation_completion.models;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
 
 import java.time.Instant;
 
@@ -17,7 +12,6 @@ import java.time.Instant;
 @Table(name = "student")
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -39,7 +33,10 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_map_id")
+
     private Grade grade;
+//    @Column(name = "grade_point_id")
+//    private String grade;
 
     @Column(name = "level")
     private Integer level;
@@ -50,10 +47,7 @@ public class Student {
     @Column(name = "valid")
     private Boolean valid;
 
-    @Column(name = "gpv")
-    private Double gpv;
-
-//    @Column(name = "create_date")
-//    private Instant createDate;
+    @Column(name = "create_date")
+    private Instant createDate;
 
 }
