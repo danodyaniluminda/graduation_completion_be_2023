@@ -63,7 +63,15 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
                 level3CreditRegularCheckerQuery.setParameter("noOfCreditsRequired", noOfCreditsRequired);
                 String jsonText = (String) level3CreditRegularCheckerQuery.getSingleResult();
                 JsonObject result = new Gson().fromJson(jsonText, JsonObject.class);
-                response.put("result", result);
+                response.put("allApplicationIds", result.get("allApplicationIds"));
+                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIds", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIds"));
+                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIds", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIds"));
+                response.put("totalCreditsLessThanRequiredCreditsApplicationIds", result.get("totalCreditsLessThanRequiredCreditsApplicationIds"));
+                response.put("allApplicationIdsCount", result.get("allApplicationIdsCount"));
+                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount"));
+                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount"));
+                response.put("totalCreditsLessThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsLessThanRequiredCreditsApplicationIdsCount"));
+                response.put("allApplications", result.get("allApplications"));
                 //https://stackoverflow.com/questions/61169128/could-not-write-json-jsonobject-nested-exception-is-com-fasterxml-jackson-data
             }
 
