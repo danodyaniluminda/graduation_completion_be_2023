@@ -10,6 +10,7 @@ import lombok.Setter;
 @Table(name = "student_subject")
 public class StudentSubject {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -23,5 +24,8 @@ public class StudentSubject {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type")
     private SubjectType type;
+
+    @Column(name = "student_id")
+    private Long studentId;
 
 }
