@@ -281,7 +281,7 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 logger.info("Success ! Updated failed students in criteria detail. " + failCount + " number of rows updated");
 
 
-                response.put("message", "success");
+                response.put("message", "Total of Consider Data - "+passCount+failCount+", Pass - "+passCount+" recoards, Fail - " +failCount+ " recoards");
                 response.put("passCount", passCount);
                 response.put("failCount", failCount);
 
@@ -390,7 +390,8 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 logger.info("Success ! Updated failed students in criteria detail. " + failCount + " number of rows updated");
 
 
-                response.put("message", "success open elective level 5");
+                response.put("message", "Total of Consider Data - "+passCount+failCount+", Pass - "+passCount+" recoards, Fail - " +failCount+ " recoards");
+
                 response.put("passCount", passCount);
                 response.put("failCount", failCount);
 
