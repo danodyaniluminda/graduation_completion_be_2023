@@ -1,12 +1,10 @@
 package com.ousl.graduation_completion.service.impl;
 
+import com.ousl.graduation_completion.dto.DataObject;
 import com.ousl.graduation_completion.dto.response.OptionalCourseListResponeDto;
 import com.ousl.graduation_completion.models.*;
-import com.ousl.graduation_completion.repository.ProgramCriterionRepository;
-import com.ousl.graduation_completion.repository.ProgramRepository;
-import com.ousl.graduation_completion.repository.RuleLogRepository;
-import com.ousl.graduation_completion.repository.StudentStatusRepository;
-import com.ousl.graduation_completion.service.OptionalCourseCreditCheckerService;
+import com.ousl.graduation_completion.repository.*;
+import com.ousl.graduation_completion.service.OpenElectiveCourseCreditCheckerService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -23,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCreditCheckerService {
+public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveCourseCreditCheckerService {
 
     @PersistenceContext
     EntityManager em;
@@ -34,17 +32,21 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
     @Autowired
     StudentStatusRepository studentStatusRepository;
 
-    Logger logger = LoggerFactory.getLogger(OptionalCourseCreditCheckerServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(OpenElectiveCourseCreditCheckerServiceImpl.class);
     @Autowired
     private ProgramCriterionRepository programCriterionRepository;
     @Autowired
     private ProgramRepository programRepository;
     @Autowired
     private StatusRepository statusRepository;
+    @Autowired
+    private CriterionRepository criterionRepository;
+    @Autowired
+    private StudentFailedCriteriaDetailRepository studentFailedCriteriaDetailRepository;
 
     @Override
     @Transactional
-    public List<?> checkCoursesNeedToBeConvertedLevelThree(Integer programId) {
+    public DataObject checkCoursesNeedToBeConverted(Integer programId, Integer level) {
         try {
             /*
              *  This query retrieves unique course_id and application_id from the student table where the program_id is equal to the provided :programmeId,
@@ -56,12 +58,14 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
                     "where program_id = :programmeId and valid=false and level=:level and course_type = 5 and course_id not in (select program_course.course_id from program_course where program_course.program_id= :programmeId)";
             Query query = em.createNativeQuery(sql);
             query.setParameter("programmeId", programId);
-            query.setParameter("level", 3);
+            query.setParameter("level", level);
 
-
+            // Execute the query and retrieve the results as a list of Object[] arrays
             List<Object[]> results = query.getResultList();
+            DataObject dataObject = new DataObject();
 
 
+            // Check if the results list is not empty
             if (!results.isEmpty()) {
                 logger.info("some courses are not valid");
                 List<OptionalCourseListResponeDto> response = new ArrayList<>();
@@ -71,23 +75,34 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
                     optionalCourseListResponeDto.setApplicationId(res[1].toString());
                     response.add(optionalCourseListResponeDto);
                 }
-                return response;
+                dataObject.setData(response);
+                dataObject.setMessage("Not match open elective keys not match.");
+                dataObject.setStatus("NOT_MATCH");
             } else {
-                updateConsidered(programId, 3);
-                assignHighestCreditIfEnrolledMoreThanSix(programId, 3);
+                updateConsidered(programId, level);
+                assignHighestCreditIfEnrolledMoreThanSix(programId, level);
+
+                dataObject.setStatus("SUCCESS");
+                dataObject.setMessage("Data validated");
             }
+            return dataObject;
 
         } catch (Exception e) {
             logger.error("Error! " + e.getMessage());
-
-
+            return new DataObject("ERROR", e.getMessage(), null);
         }
-        return null;
     }
 
     private void updateConsidered(Integer programId, int level) {
         try {
 
+            /*
+            *   -- This query is used to update the 'student' table.
+                -- It sets the 'valid' column to 'false' and updates the 'last_updated_at' column with the current timestamp.
+                -- The update is applied to rows where the 'course_type' is 5,
+                -- the 'level' matches the provided value, and the 'program_id' matches the provided 'programmeId'.
+
+            * */
 
             String updateAll = "update student set valid=false,last_updated_at=:current where  course_type=5  and level=:level and  program_id = :programmeId";
             Query nativeQuery = em.createNativeQuery(updateAll);
@@ -161,8 +176,7 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
              *
              * */
             while (true) {
-                int numberOfRowsAffected = ((Number) query.getSingleResult()).intValue();
-
+//                updatedRows=numberOfRowsAffected;
                 /*
                  *  The variable numberOfRowsAffected represents the number of rows affected by the query.
                  *  The condition !(numberOfRowsAffected > 0) checks if the number of affected rows is not greater than 0.
@@ -170,7 +184,7 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
                  *  indicating that no rows were affected, the break statement is executed,
                  *  exiting the loop.
                  * */
-
+                int numberOfRowsAffected = ((Number) query.getSingleResult()).intValue();
                 if (!(numberOfRowsAffected > 0)) break;
 
 
@@ -193,11 +207,12 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
                                 "    FROM student where application_id in\n" +
                                 "    (SELECT application_id\n" +
                                 "        FROM student\n" +
-                                "        where level = 3 and valid = true and program_id = :programmeId and course_type = 5 and grade_map_id>=6 group by application_id HAVING sum(credit)>6\n" +
-                                ") and level = 3 and valid = true and program_id = :programmeId and course_type = 5 and grade_map_id>=6 ORDER BY application_id,grade_map_id asc LIMIT 1\n" +
+                                "        where level = :level and valid = true and program_id = :programmeId and course_type = 5 and grade_map_id>=6 group by application_id HAVING sum(credit)>6\n" +
+                                ") and level = :level and valid = true and program_id = :programmeId and course_type = 5 and grade_map_id>=6 ORDER BY application_id,grade_map_id asc LIMIT 1\n" +
                                 ")";
                 Query updatequery = em.createNativeQuery(updateSql);
                 updatequery.setParameter("programmeId", programId);
+                updatequery.setParameter("level", level);
                 updatequery.setParameter("current", LocalDateTime.now());
 
 
@@ -221,6 +236,8 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
             Optional<ProgramCriterion> programCriterion = programCriterionRepository.getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(programId, true, 3L);
 
             if (programCriterion.isPresent()) {
+                Program program = programRepository.findById(programId).orElse(null);
+                deleteAllStudentFailedCriteria(program,3L);
 
                 /*
                  *  This query inserts records into the student_failed_criteria_detail table.
@@ -230,14 +247,16 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
                 String passSql = "INSERT INTO student_failed_criteria_detail (program_id, student_id, criteria_id, status, details)\n" +
                         "SELECT program_id,application_id, 3, 'pass', 'Open elctive cource has been successfully passed'\n" +
                         "FROM student \n" +
-                        "WHERE program_id = :programId AND course_type = 5 AND valid = true AND grade_map_id >= 6\n " +
-                        "GROUP BY program_id, application_id\n"+
+                        "WHERE program_id = :programId AND level=3 AND course_type = 5 AND valid = true AND grade_map_id >= 6\n " +
+                        "GROUP BY program_id, application_id\n" +
                         "HAVING  sum(credit)>=6";
 
                 Query passQuery = em.createNativeQuery(passSql);
                 passQuery.setParameter("programId", programId);
                 int passCount = passQuery.executeUpdate();
                 logger.info("Success ! Updated passed students in criteria detail. " + passCount + " number of rows updated");
+
+                updateRuleLog(3L, "pass", program, 3);
 
                 /*
 
@@ -247,10 +266,10 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
                  *
                  * */
 
-                String failSql =  "INSERT INTO student_failed_criteria_detail (program_id, student_id, criteria_id, status, details)\n" +
+                String failSql = "INSERT INTO student_failed_criteria_detail (program_id, student_id, criteria_id, status, details)\n" +
                         "SELECT program_id, application_id, 3, 'fail', 'Open elective course not passed'\n" +
                         "FROM student\n" +
-                        "WHERE valid = true and program_id = :programId\n" +
+                        "WHERE valid = true AND level=3 and program_id = :programId\n" +
                         "  AND course_type = 5\n" +
                         "and grade_map_id > 5\n" +
                         "GROUP BY program_id, application_id\n" +
@@ -266,9 +285,10 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
                 response.put("passCount", passCount);
                 response.put("failCount", failCount);
 
-                Program program = programRepository.findById(programId).orElse(null);
 
                 updateProgramSequence(program);
+                updateRuleLog(3L, "fail", program, 3);
+
 //                updateRuleLog(student,program);
 //                studentStatus(program,student);
                 return response;
@@ -283,20 +303,139 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
 
     }
 
-    private void updateRuleLog(Student student, Program program) {
+    @Override
+    @Transactional
+    public HashMap<String, Object> checkOpenElectiveCourseLevelFive(Long programId) {
+        HashMap<String, Object> response = new HashMap<>();
         try {
-            RuleLog ruleLog = new RuleLog();
-            ruleLog.setStudent(student);
-            ruleLog.setProgram(program);
-            ruleLog.setLog("");
-            ruleLogRepository.save(ruleLog);
+            Optional<ProgramCriterion> programCriterion = programCriterionRepository.getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(programId, true, 6L);
+            if (programCriterion.isPresent()) {
+
+                Program program = programRepository.findById(programId).orElse(null);
+                deleteAllStudentFailedCriteria(program,6L);
+                /*
+                 *  The query fetches data from the student table,
+                    including the program_id, application_id,
+                    a static value 6 representing the course type open elective,
+                    'pass' indicating the pass status,
+                    and a message stating that the open elective course at level 5 has been successfully passed.
+
+                 *  To filter the data,
+                    the query performs a left join with the student_subject table on the
+                    condition that the application_id from the student table matches the
+                    student_id from the student_subject table.
+                    The filtering conditions are as follows:
+
+                        --The program_id of the student must match the provided :programId.
+                        --The level of the student must be 5.
+                        --The course_type of the student must be 5 open elective.
+                        --The student must be marked as valid (valid = true).
+                        --The grade_map_id of the student must be greater than or equal to 6 means c pass.
+                        --The is_major_discipline in the student_subject table must be false.
+                        --The subject_id in the student_subject table must be 1 that means common.
+
+                 *  After retrieving the data,
+                    the query groups the results based on the program_id and application_id.
+                    It then filters the results using the
+                    HAVING clause to include only those students whose sum of credits is equal to 6.
+                 * */
+
+                String passSql = "INSERT INTO student_failed_criteria_detail (program_id, student_id, criteria_id, status, details)\n" +
+                        "SELECT s.program_id,\n" +
+                        "       s.application_id,\n" +
+                        "       6,\n" +
+                        "       'pass',\n" +
+                        "       'Open elctive cource level 5 has been successfully passed'\n" +
+                        "FROM student s\n" +
+                        "left join student_subject ss on s.application_id = ss.student_id\n" +
+                        "WHERE s.program_id = :programId\n" +
+                        "  AND s.level = 5\n" +
+                        "  AND s.course_type = 5\n" +
+                        "  AND s.valid = true\n" +
+                        "  AND s.grade_map_id >= 6\n" +
+                        "  AND ss.is_major_discipline = false\n" +
+                        "  AND ss.subject_id = 1\n" +
+                        "GROUP BY s.program_id, s.application_id\n" +
+                        "HAVING sum(s.credit) = 6;";
+
+                Query passQuery = em.createNativeQuery(passSql);
+                passQuery.setParameter("programId", programId);
+                int passCount = passQuery.executeUpdate();
+                updateRuleLog(6L, "pass", program, 5);
+                logger.info("Success ! Updated passed students in criteria detail. " + passCount + " number of rows updated");
+
+
+//This query inserts details of students who have not passed an open elective course at level 5
+                String failSql = "INSERT INTO student_failed_criteria_detail (program_id, student_id, criteria_id, status, details)\n" +
+                        "SELECT s.program_id,\n" +
+                        "       s.application_id,\n" +
+                        "       6,\n" +
+                        "       'fail',\n" +
+                        "       'Open elctive level 5 cource not pass'\n" +
+                        "FROM student s\n" +
+                        "left join student_subject ss on s.application_id = ss.student_id\n" +
+                        "WHERE s.program_id = :programId\n" +
+                        "  AND s.level = 5\n" +
+                        "  AND s.course_type = 5\n" +
+                        "  AND s.valid = true\n" +
+                        "  AND s.grade_map_id >= 6\n" +
+                        "  AND ss.is_major_discipline = false\n" +
+                        "  AND ss.subject_id = 1\n" +
+                        "GROUP BY s.program_id, s.application_id\n" +
+                        "HAVING sum(s.credit) < 6;";
+
+                Query failQuery = em.createNativeQuery(failSql);
+                failQuery.setParameter("programId", programId);
+                int failCount = failQuery.executeUpdate();
+                logger.info("Success ! Updated failed students in criteria detail. " + failCount + " number of rows updated");
+
+
+                response.put("message", "success open elective level 5");
+                response.put("passCount", passCount);
+                response.put("failCount", failCount);
+
+
+                updateProgramSequence(program);
+                updateRuleLog(6L, "fail", program, 5);
+
+//                studentStatus(program,student);
+                return response;
+            }
+            response.put("message", "Already updated.");
+            return response;
+        } catch (Exception e) {
+            response.put("message", "error : " + e.getMessage());
+            return response;
+        }
+
+    }
+
+    private void deleteAllStudentFailedCriteria(Program program, Long criteriaId) {
+        Criterion criterion = criterionRepository.findById(criteriaId).get();
+        studentFailedCriteriaDetailRepository.deleteAllByCriteriaAndProgram(criterion, program);
+    }
+
+    private void updateRuleLog(Long criteriaId, String status, Program program, int level) {
+        try {
+            Criterion criterion = criterionRepository.findById(criteriaId).get();
+            List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteriaAndStatusAndProgram(criterion, status, program);
+            for (StudentFailedCriteriaDetail student : getInsertedStudents) {
+                RuleLog ruleLog = new RuleLog();
+                ruleLog.setStudent(student.getStudent());
+                ruleLog.setProgram(student.getProgram());
+                ruleLog.setLog("Level " + level + " " + criterion.getCriteriaName() + " checked");
+                ruleLogRepository.save(ruleLog);
+            }
             logger.info("Success ! updated Rule Log");
+
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("Error ! update Rule Log " + e.getMessage());
         }
     }
+
+
 
     private void updateProgramSequence(Program program) {
         try {
@@ -328,7 +467,7 @@ public class OptionalCourseCreditCheckerServiceImpl implements OptionalCourseCre
             studentStatus.setProgram(program);
             Status status = statusRepository.findById(3L).orElse(null);
             studentStatus.setStatus(status);
-            studentStatus.setStudent(student);
+            studentStatus.setStudent(student.getApplicationId());
             studentStatusRepository.save(studentStatus);
 
         } catch (Exception e) {

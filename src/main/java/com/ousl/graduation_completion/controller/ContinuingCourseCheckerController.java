@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("api/graduation-completion/gpa_calculation")
+@RequestMapping("api/graduation-completion/continuingCourse")
 public class ContinuingCourseCheckerController {
     @Autowired
     ContinuingCourseCheckerServiceImpl continuingCourseCheckerService;
@@ -17,9 +17,9 @@ public class ContinuingCourseCheckerController {
         return ResponseEntity.ok(continuingCourseCheckerService.checkCntCourse(progid));
     }
 
-    @GetMapping("/checkCntCourse2")
-    public ResponseEntity<Integer> checkCntCourse2(@RequestParam("id") Integer progid) {
-        int updatedCount = continuingCourseCheckerService.updateFailedOrPassedCritiaStudent(progid);
-        return ResponseEntity.ok(updatedCount);
+    @GetMapping("/updateFailedOrPassedCritiaStudent")
+    public ResponseEntity<DataObject> checkCntCourse2(@RequestParam("id") Integer progid) {
+        DataObject dataObject = continuingCourseCheckerService.updateFailedOrPassedCritiaStudent(progid);
+        return ResponseEntity.ok(dataObject);
     }
 }
