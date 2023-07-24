@@ -12,6 +12,7 @@ import java.time.Instant;
 @Table(name = "program_course")
 public class ProgramCourse {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -23,10 +24,9 @@ public class ProgramCourse {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @Column(name = "create_date")
-    private Instant createDate;
+//    @Column(name = "create_date")
+//    private Instant createDate;
 
     @Column(name = "created_by")
     private Long createdBy;
-
 }

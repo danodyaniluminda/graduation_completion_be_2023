@@ -20,4 +20,11 @@ public class ALLTables {
 
     @Column(name = "table_name")
     private String name;
+
+    @Column(name = "label")
+    private String label;
+
+    @Column(name = "valid")
+    private Boolean valid;
+
 }
