@@ -56,22 +56,14 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
             if(level==3){
 
                 Query level3CreditRegularCheckerQuery = em.createNativeQuery(
-                        "select level_3_regular_credit_checker(:noOfCreditsRequired,:programId)",String.class
+                        "select level_3_regular_credit_checker(:programId,:noOfCreditsRequired,:level)",String.class
                 );
                 level3CreditRegularCheckerQuery.setParameter("programId", programId);
-                //level3CreditRegularCheckerQuery.setParameter("level", level);
+                level3CreditRegularCheckerQuery.setParameter("level", level);
                 level3CreditRegularCheckerQuery.setParameter("noOfCreditsRequired", noOfCreditsRequired);
                 String jsonText = (String) level3CreditRegularCheckerQuery.getSingleResult();
                 JsonObject result = new Gson().fromJson(jsonText, JsonObject.class);
-                response.put("allApplicationIds", result.get("allApplicationIds"));
-                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIds", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIds"));
-                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIds", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIds"));
-                response.put("totalCreditsLessThanRequiredCreditsApplicationIds", result.get("totalCreditsLessThanRequiredCreditsApplicationIds"));
-                response.put("allApplicationIdsCount", result.get("allApplicationIdsCount"));
-                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount"));
-                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount"));
-                response.put("totalCreditsLessThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsLessThanRequiredCreditsApplicationIdsCount"));
-                response.put("allApplications", result.get("allApplications"));
+                response.put("result", result);
                 //https://stackoverflow.com/questions/61169128/could-not-write-json-jsonobject-nested-exception-is-com-fasterxml-jackson-data
             }
 
