@@ -1,10 +1,14 @@
 package com.ousl.graduation_completion.service;
 
+import com.ousl.graduation_completion.dto.DataObject;
+
 import java.util.HashMap;
 
 public interface GpaCalculationService {
 
-    HashMap<String, Object> gpaCalculations(Long programId);
+    DataObject checkConsideredApplications(Long programId);
 
+
+    HashMap<String, Object> gpaCalculations(Long programId);
 
 }
