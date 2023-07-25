@@ -11,5 +11,5 @@ public interface StudentFailedCriteriaDetailRepository extends JpaRepository<Stu
 
     void deleteAllByCriteriaAndProgram(Criterion criterion, Program program);
 
-    List<StudentFailedCriteriaDetail> getAllByCriteriaAndStatusAndProgram(Criterion criteria, String status, Program programId);
+    List<StudentFailedCriteriaDetail> getAllByCriteria_IdAndStatusAndProgram(Long criteriaId, String status, Program programId);
 }
