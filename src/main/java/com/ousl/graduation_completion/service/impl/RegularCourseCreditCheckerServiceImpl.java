@@ -73,7 +73,6 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
                 //https://stackoverflow.com/questions/61169128/could-not-write-json-jsonobject-nested-exception-is-com-fasterxml-jackson-data
             }
 
-            response.put("message", "???");
             response.put("status", "success");
             return response;
 
@@ -82,7 +81,7 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
             System.out.println(e.getClass());
-            response.put("message", "???");
+
             response.put("status", "error : " + e.getLocalizedMessage());
             return response;
         }
