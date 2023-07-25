@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +38,7 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
     private ProgramCriterionRepository programCriterionRepository;
     @Autowired
     private ProgramRepository programRepository;
-//    @Autowired
-//    private StatusRepository statusRepository;
+
     @Autowired
     private CriterionRepository criterionRepository;
     @Autowired
@@ -99,7 +99,7 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
             /*
             *   -- This query is used to update the 'student' table.
                 -- It sets the 'valid' column to 'false' and updates the 'last_updated_at' column with the current timestamp.
-                -- The update is applied to rows where the 'course_type' is 5,
+                -- The update is applied to rows where the 'course_type' is 5 such open elective,
                 -- the 'level' matches the provided value, and the 'program_id' matches the provided 'programmeId'.
 
             * */
@@ -255,8 +255,10 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 passQuery.setParameter("programId", programId);
                 int passCount = passQuery.executeUpdate();
                 logger.info("Success ! Updated passed students in criteria detail. " + passCount + " number of rows updated");
+                List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(3L, "pass", program);
+                updateRuleLog(3L, 3, getInsertedStudents);
+                studentStatus(3L,getInsertedStudents);
 
-                updateRuleLog(3L, "pass", program, 3);
 
                 /*
 
@@ -285,9 +287,11 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 response.put("passCount", passCount);
                 response.put("failCount", failCount);
 
-
+                getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(3L, "pass", program);
                 updateProgramSequence(program);
-                updateRuleLog(3L, "fail", program, 3);
+                updateRuleLog(3L, 3, getInsertedStudents);
+                studentStatus(3L,getInsertedStudents);
+
 
 //                updateRuleLog(student,program);
 //                studentStatus(program,student);
@@ -361,7 +365,9 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 Query passQuery = em.createNativeQuery(passSql);
                 passQuery.setParameter("programId", programId);
                 int passCount = passQuery.executeUpdate();
-                updateRuleLog(6L, "pass", program, 5);
+                List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(3L, "pass", program);
+                updateRuleLog(6L, 5, getInsertedStudents);
+                studentStatus(5L,getInsertedStudents);
                 logger.info("Success ! Updated passed students in criteria detail. " + passCount + " number of rows updated");
 
 
@@ -395,11 +401,13 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 response.put("passCount", passCount);
                 response.put("failCount", failCount);
 
+                getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(3L, "pass", program);
 
                 updateProgramSequence(program);
-                updateRuleLog(6L, "fail", program, 5);
+                updateRuleLog(6L, 5, getInsertedStudents);
+                studentStatus(5L,getInsertedStudents);
 
-//                studentStatus(program,student);
+
                 return response;
             }
             response.put("message", "Already updated.");
@@ -416,14 +424,15 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
         studentFailedCriteriaDetailRepository.deleteAllByCriteriaAndProgram(criterion, program);
     }
 
-    private void updateRuleLog(Long criteriaId, String status, Program program, int level) {
+    private void updateRuleLog(Long criteriaId, int level, Iterable<? extends StudentFailedCriteriaDetail> getInsertedStudents) {
         try {
             Criterion criterion = criterionRepository.findById(criteriaId).get();
-            List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteriaAndStatusAndProgram(criterion, status, program);
+
             for (StudentFailedCriteriaDetail student : getInsertedStudents) {
                 RuleLog ruleLog = new RuleLog();
                 ruleLog.setStudent(student.getStudent());
                 ruleLog.setProgram(student.getProgram());
+                ruleLog.setCreateDate(Instant.now());
                 ruleLog.setLog("Level " + level + " " + criterion.getCriteriaName() + " checked");
                 ruleLogRepository.save(ruleLog);
             }
@@ -462,21 +471,23 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
         }
     }
 
-//    private void studentStatus(Program program, Student student) {
-//        try {
-//            StudentStatus studentStatus = new StudentStatus();
-//            studentStatus.setProgram(program);
-//            Status status = statusRepository.findById(3L).orElse(null);
-//            studentStatus.setStatus(status);
-//            studentStatus.setStudent(student.getApplicationId());
-//            studentStatusRepository.save(studentStatus);
+    private void studentStatus(Long programCriterionId, Iterable<? extends StudentFailedCriteriaDetail> getInsertedStudents) {
+        try {
+
+            for (StudentFailedCriteriaDetail student : getInsertedStudents) {
+                StudentStatus studentStatus = new StudentStatus();
+                studentStatus.setStudent(student.getStudent());
+                studentStatus.setProgramCriterion(programCriterionId);
+                studentStatus.setCreateDate(Instant.now());
+                studentStatusRepository.save(studentStatus);
+            }
+            logger.info("Success ! updated student status");
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("Error ! Update student status " + e.getMessage());
         }
     }
-//
-//
-//}
-//
+
+
+}
