@@ -63,20 +63,18 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
                 level3CreditRegularCheckerQuery.setParameter("noOfCreditsRequired", noOfCreditsRequired);
                 String jsonText = (String) level3CreditRegularCheckerQuery.getSingleResult();
                 JsonObject result = new Gson().fromJson(jsonText, JsonObject.class);
-                response.put("allApplicationIds", result.get("allApplicationIds"));
-                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIds", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIds"));
-                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIds", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIds"));
-                response.put("totalCreditsLessThanRequiredCreditsApplicationIds", result.get("totalCreditsLessThanRequiredCreditsApplicationIds"));
-                response.put("allApplicationIdsCount", result.get("allApplicationIdsCount"));
-                response.put("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount", result.get("totalCreditsExactlyMatchRequiredCreditsApplicationIdsCount"));
-                response.put("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsGreaterThanRequiredCreditsApplicationIdsCount"));
-                response.put("totalCreditsLessThanRequiredCreditsApplicationIdsCount", result.get("totalCreditsLessThanRequiredCreditsApplicationIdsCount"));
-                response.put("allApplications", result.get("allApplications"));
+                response.put("total", result.get("total"));
+                response.put("totalPass", result.get("totalPass"));
+                response.put("message", result.get("message"));
+                response.put("totalPassConflict", result.get("totalPassConflict"));
+                response.put("totalFail", result.get("totalFail"));
+                response.put("conflict", result.get("conflict"));
+                response.put("conflictExcel", result.get("conflictExcel"));
                 //https://stackoverflow.com/questions/61169128/could-not-write-json-jsonobject-nested-exception-is-com-fasterxml-jackson-data
             }
 
-            response.put("status", true);
-            response.put("message", "success");
+            response.put("message", "???");
+            response.put("status", "success");
             return response;
 
         }catch (Exception e){
@@ -84,8 +82,8 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
             System.out.println(e.getClass());
-            response.put("status", false);
-            response.put("message", "error : " + e.getLocalizedMessage());
+            response.put("message", "???");
+            response.put("status", "error : " + e.getLocalizedMessage());
             return response;
         }
     }
