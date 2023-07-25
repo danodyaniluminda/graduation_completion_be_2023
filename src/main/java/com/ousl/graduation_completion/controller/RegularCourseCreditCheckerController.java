@@ -20,6 +20,7 @@ public class RegularCourseCreditCheckerController {
     @GetMapping(value = "/check-regular-course-credits-passed")
     public ResponseEntity<?>checkRegularCourseCredits(@RequestParam Long programId,@RequestParam Integer level, @RequestParam Integer noOfCreditsRequired){
         return ResponseEntity.ok().body(regularCourseCreditCheckerService.checkRegularCourseCredits(programId,level,noOfCreditsRequired));
+        //return ResponseEntity.ok().body("test");
     }
 
 }
