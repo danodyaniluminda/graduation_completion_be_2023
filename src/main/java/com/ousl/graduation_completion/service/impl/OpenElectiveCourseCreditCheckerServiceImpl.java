@@ -37,8 +37,8 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
     private ProgramCriterionRepository programCriterionRepository;
     @Autowired
     private ProgramRepository programRepository;
-    @Autowired
-    private StatusRepository statusRepository;
+//    @Autowired
+//    private StatusRepository statusRepository;
     @Autowired
     private CriterionRepository criterionRepository;
     @Autowired
@@ -462,20 +462,21 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
         }
     }
 
-    private void studentStatus(Program program, Student student) {
-        try {
-            StudentStatus studentStatus = new StudentStatus();
-            studentStatus.setProgram(program);
-            Status status = statusRepository.findById(3L).orElse(null);
-            studentStatus.setStatus(status);
-            studentStatus.setStudent(student.getApplicationId());
-            studentStatusRepository.save(studentStatus);
+//    private void studentStatus(Program program, Student student) {
+//        try {
+//            StudentStatus studentStatus = new StudentStatus();
+//            studentStatus.setProgram(program);
+//            Status status = statusRepository.findById(3L).orElse(null);
+//            studentStatus.setStatus(status);
+//            studentStatus.setStudent(student.getApplicationId());
+//            studentStatusRepository.save(studentStatus);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("Error ! Update student status " + e.getMessage());
         }
     }
-
-
-}
+//
+//
+//}
+//
