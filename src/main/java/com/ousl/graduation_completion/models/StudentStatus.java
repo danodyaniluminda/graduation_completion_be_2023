@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,6 +28,6 @@ public class StudentStatus {
     private Long programCriterion;
 
     @Column(name = "create_date")
-    private Instant createDate;
+    private LocalDateTime createDate;
 
 }
