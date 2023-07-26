@@ -12,4 +12,5 @@ public interface TableManagementService {
     List<ALLTables> getAllTables();
 
     ResponseEntity<String> updateCorrespondingTables(String tableName, List<Map<String, Object>> dataArray) throws ChangeSetPersister.NotFoundException;
+
 }
