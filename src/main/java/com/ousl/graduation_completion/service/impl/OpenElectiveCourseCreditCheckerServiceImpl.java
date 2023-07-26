@@ -432,7 +432,7 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 RuleLog ruleLog = new RuleLog();
                 ruleLog.setStudent(student.getStudent());
                 ruleLog.setProgram(student.getProgram());
-                ruleLog.setCreateDate(Instant.now());
+                ruleLog.setCreateDate(LocalDateTime.now());
                 ruleLog.setLog("Level " + level + " " + criterion.getCriteriaName() + " checked");
                 ruleLogRepository.save(ruleLog);
             }
@@ -478,7 +478,7 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
                 StudentStatus studentStatus = new StudentStatus();
                 studentStatus.setStudent(student.getStudent());
                 studentStatus.setProgramCriterion(programCriterionId);
-                studentStatus.setCreateDate(Instant.now());
+                studentStatus.setCreateDate(LocalDateTime.now());
                 studentStatusRepository.save(studentStatus);
             }
             logger.info("Success ! updated student status");
