@@ -33,5 +33,4 @@ public class ALLTables {
     @Column(name = "is_uploadable")
     private Boolean upload;
 
-
 }
