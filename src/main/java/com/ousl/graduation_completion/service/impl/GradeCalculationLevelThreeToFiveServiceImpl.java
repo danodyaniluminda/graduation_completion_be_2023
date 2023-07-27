@@ -102,6 +102,9 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                 List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(5L, "pass", program);
                 updateRuleLog(5L, 3, getInsertedStudents);
 
+                getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(5L, "fail", program);
+                updateRuleLog(5L, 3, getInsertedStudents);
+
                 program = programRepository.findById(programId).orElse(null);
                 updateProgramSequence(program);
 
@@ -126,7 +129,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
         HashMap<String, Object> response = new HashMap<>();
         try {
 
-            Optional<ProgramCriterion> programCriterion = programCriterionRepository.getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(programId, true, 3L);
+            Optional<ProgramCriterion> programCriterion = programCriterionRepository.getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(programId, true, 7L);
 
             if (programCriterion.isPresent()) {
                 Program program = programRepository.findById(programId).orElse(null);
@@ -212,6 +215,9 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                 List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(7L, "pass", program);
                 updateRuleLog(7L, 4, getInsertedStudents);
 
+                getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(7L, "fail", program);
+                updateRuleLog(7L, 4, getInsertedStudents);
+
                 program = programRepository.findById(programId).orElse(null);
                 updateProgramSequence(program);
 
@@ -238,7 +244,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
         HashMap<String, Object> response = new HashMap<>();
         try {
 
-            Optional<ProgramCriterion> programCriterion = programCriterionRepository.getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(programId, true, 3L);
+            Optional<ProgramCriterion> programCriterion = programCriterionRepository.getProgramCriterionByProgram_IdAndActiveAndCriteria_Id(programId, true, 8L);
 
             if (programCriterion.isPresent()) {
                 Program program = programRepository.findById(programId).orElse(null);
@@ -254,7 +260,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                         "INSERT INTO student_failed_criteria_detail (program_id, student_id, criteria_id, status, details, create_date,created_by)\n" +
                                 "SELECT program_id,\n" +
                                 "       application_id,\n" +
-                                "       7,\n" +
+                                "       8,\n" +
                                 "       CASE\n" +
                                 "           WHEN application_id IN (SELECT DISTINCT s.application_id\n" +
                                 "                                   FROM student s\n" +
@@ -302,9 +308,9 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                                 "                                                               AND s.program_id = :programId\n" +
                                 "                                                             GROUP BY s.application_id\n" +
                                 "                                                             HAVING SUM(s.credit) >= 30)\n" +
-                                "                                         THEN 'Successfully Completed Level 4 Grade Validation'\n" +
+                                "                                         THEN 'Successfully Completed Level 5 Grade Validation'\n" +
                                 "               END\n" +
-                                "           ELSE 'Not Completed Level 4 Grade Validation'\n" +
+                                "           ELSE 'Not Completed Level 5 Grade Validation'\n" +
                                 "           END,\n" +
                                 "       CURRENT_TIMESTAMP,\n" +
                                 "       1\n" +
@@ -322,6 +328,9 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                 response.put("rows were Updated", upCount2);
 
                 List<StudentFailedCriteriaDetail> getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(8L, "pass", program);
+                updateRuleLog(8L, 5, getInsertedStudents);
+
+                getInsertedStudents = studentFailedCriteriaDetailRepository.getAllByCriteria_IdAndStatusAndProgram(8L, "fail", program);
                 updateRuleLog(8L, 5, getInsertedStudents);
 
                 program = programRepository.findById(programId).orElse(null);
