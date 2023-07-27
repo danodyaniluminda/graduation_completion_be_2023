@@ -4,8 +4,6 @@ import com.ousl.graduation_completion.models.*;
 import com.ousl.graduation_completion.repository.*;
 import com.ousl.graduation_completion.service.TableManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -15,27 +13,48 @@ import java.util.Map;
 @Service
 public class TableManagementServiceImpl implements TableManagementService {
 
-
    private final TableRepository tableRepository;
    private final ApplicationRepository applicationRepository;
    private final StudentStatusRepository studentStatusRepository;
    private final StudentRepository studentRepository;
    private final ProgramCourseRepository programcourseRepository;
    private final StudentSubjectRepository studentsubjectRepository;
+   private final GradeRepository gradeRepository;
+
 
    @Autowired
-   public TableManagementServiceImpl(TableRepository tableRepository, ApplicationRepository applicationRepository, StudentStatusRepository studentStatusRepository, StudentRepository studentRepository, ProgramCourseRepository programcourseRepository, StudentSubjectRepository studentsubjectRepository) {
+   public TableManagementServiceImpl(TableRepository tableRepository, ApplicationRepository applicationRepository, StudentStatusRepository studentStatusRepository, StudentRepository studentRepository, ProgramCourseRepository programcourseRepository, StudentSubjectRepository studentsubjectRepository, GradeRepository gradeRepository) {
         this.tableRepository = tableRepository;
         this.applicationRepository = applicationRepository;
         this.studentStatusRepository = studentStatusRepository;
         this.studentRepository = studentRepository;
         this.programcourseRepository = programcourseRepository;
         this.studentsubjectRepository = studentsubjectRepository;
-    }
+        this.gradeRepository = gradeRepository;
+   }
 
     @Override
     public List<ALLTables> getAllTables() {
         return tableRepository.findAll();
+    }
+
+@Override
+public List<?> getAllDataFromTable(String table) {
+        if ("student_status".equals(table)) {
+            System.out.println("Fetching data from student_status table");
+            return studentStatusRepository.findAll();
+        } else if ("student".equals(table)) {
+            System.out.println("Fetching data from student table");
+            return studentRepository.findAll();
+        }else if ("grade".equals(table)) {
+            System.out.println("Fetching data from grade table");
+            return gradeRepository.findAll();
+        }
+        else {
+            System.out.println("Invalid table name: " + table);
+            return null;
+        }
+
     }
 
     @Override
