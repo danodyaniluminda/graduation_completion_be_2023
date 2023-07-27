@@ -37,6 +37,9 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
     @Autowired
     private StudentFailedCriteriaDetailRepository studentFailedCriteriaDetailRepository;
 
+    @Autowired
+    StudentStatusRepository studentStatusRepository;
+
     @Override
     @Transactional
 
@@ -107,6 +110,8 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
 
                 program = programRepository.findById(programId).orElse(null);
                 updateProgramSequence(program);
+
+                studentStatus(6L,getInsertedStudents);
 
                 return response;
 
@@ -221,6 +226,8 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
 
                 program = programRepository.findById(programId).orElse(null);
                 updateProgramSequence(program);
+
+                studentStatus(7L,getInsertedStudents);
 
 
                 return response;
@@ -338,6 +345,8 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                 program = programRepository.findById(programId).orElse(null);
                 updateProgramSequence(program);
 
+                studentStatus(8L,getInsertedStudents);
+
                 return response;
 
             }
@@ -404,6 +413,24 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
     private void deleteAllStudentFailedCriteria(Program program, Long criteriaId) {
         Criterion criterion = criterionRepository.findById(criteriaId).get();
         studentFailedCriteriaDetailRepository.deleteAllByCriteriaAndProgram(criterion, program);
+    }
+
+    private void studentStatus(Long programCriterionId, Iterable<? extends StudentFailedCriteriaDetail> getInsertedStudents) {
+        try {
+
+            for (StudentFailedCriteriaDetail student : getInsertedStudents) {
+                StudentStatus studentStatus = new StudentStatus();
+                studentStatus.setStudent(student.getStudent());
+                studentStatus.setProgramCriterion(programCriterionId);
+                studentStatus.setCreateDate(LocalDateTime.now());
+                studentStatusRepository.save(studentStatus);
+            }
+            logger.info("Success ! updated student status");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info("Error ! Update student status " + e.getMessage());
+        }
     }
 }
 
