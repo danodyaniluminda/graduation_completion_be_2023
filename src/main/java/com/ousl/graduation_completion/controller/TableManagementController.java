@@ -1,9 +1,20 @@
 package com.ousl.graduation_completion.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ousl.graduation_completion.models.ALLTables;
+import com.ousl.graduation_completion.models.Application;
+import com.ousl.graduation_completion.models.StudentStatus;
+import com.ousl.graduation_completion.repository.ApplicationRepository;
+import com.ousl.graduation_completion.repository.StudentStatusRepository;
+import com.ousl.graduation_completion.repository.TableRepository;
 import com.ousl.graduation_completion.service.TableManagementService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +26,13 @@ import java.util.Map;
 @RequestMapping("/api/graduation-completion/table-management")
 
 public class TableManagementController {
+    @Autowired
+    TableRepository tableRepository;
+    @Autowired
+    ApplicationRepository applicationRepository;
 
+    @Autowired
+    StudentStatusRepository studentStatusRepository;
     private final TableManagementService tableManagementService;
 
 
@@ -26,20 +43,25 @@ public class TableManagementController {
 
     @GetMapping("/GetAllTables")
     public List<ALLTables> getAllTables() {
-        System.out.println("table list   "+tableManagementService.getAllTables());
+        System.out.println("table list   " + tableManagementService.getAllTables());
         return tableManagementService.getAllTables();
     }
 
-    @PostMapping("/Updatetables")
-    public <TableData> void receiveTableData(@RequestBody TableData tableData) {
-        // Process the received table data as needed
-        // You can define a separate class (e.g., TableData) to represent the data structure
-    }
 
-    @PostMapping("Updatetables/{tableName}/{id}")
-    public ResponseEntity<String> updateCorrespondingTables(@PathVariable String tableName, @PathVariable Long id, @RequestBody Map<String, Object> data) throws ChangeSetPersister.NotFoundException {
-        tableManagementService.updateCorrespondingTables(tableName, id, data);
-        return ResponseEntity.ok("Tables updated successfully");
+    @PostMapping("Updatetables/{tableName}")
+    public ResponseEntity<String> updateCorrespondingTables(@PathVariable String tableName, @RequestBody List<Map<String, Object>> dataArray) {
+        try {
+            System.out.println(tableName);
+            if (dataArray != null && dataArray.size() > 0) {
+                dataArray.forEach((data) -> {
+                    System.out.println(data);
+                });
+            }
+            tableManagementService.updateCorrespondingTables(tableName, dataArray);
+            return ResponseEntity.ok().body("Tables updated successfully");
+        } catch (ChangeSetPersister.NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Table not found");
+        }
     }
 }
 
