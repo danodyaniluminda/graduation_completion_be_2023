@@ -78,4 +78,42 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
             return response;
         }
     }
+
+    @Override
+    @Transactional
+    public HashMap<String, Object> checkS1RegularCourseCredits(Long programId,Integer level) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        try{
+
+            String sqlQuery = "select s1_level_" + level.toString() +"_regular_credit_checker(:programId)";
+
+
+            Query regularCreditCheckerQuery = em.createNativeQuery(sqlQuery, String.class);
+            regularCreditCheckerQuery.setParameter("programId", programId);
+            String jsonText = (String) regularCreditCheckerQuery.getSingleResult();
+            JsonObject result = new Gson().fromJson(jsonText, JsonObject.class);
+            response.put("total", result.get("total"));
+            response.put("totalPass", result.get("totalPass"));
+            response.put("message", result.get("message"));
+            response.put("totalPassConflict", result.get("totalPassConflict"));
+            response.put("totalFail", result.get("totalFail"));
+            response.put("conflict", result.get("conflict"));
+            response.put("conflictExcel", result.get("conflictExcel"));
+            //https://stackoverflow.com/questions/61169128/could-not-write-json-jsonobject-nested-exception-is-com-fasterxml-jackson-data
+
+            response.put("status", "success");
+            return response;
+
+        }catch (Exception e){
+            System.out.println(e.getLocalizedMessage());
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+            System.out.println(e.getClass());
+
+            response.put("status", "error : " + e.getLocalizedMessage());
+            return response;
+        }
+    }
 }
