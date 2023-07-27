@@ -4,8 +4,6 @@ import com.ousl.graduation_completion.models.*;
 import com.ousl.graduation_completion.repository.*;
 import com.ousl.graduation_completion.service.TableManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -309,6 +307,7 @@ public class TableManagementServiceImpl implements TableManagementService {
         });
         return ResponseEntity.ok().body("Tables updated successfully");
     }
+
 }
 
 
