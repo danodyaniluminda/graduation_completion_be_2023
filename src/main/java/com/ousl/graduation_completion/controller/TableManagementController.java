@@ -1,6 +1,8 @@
 package com.ousl.graduation_completion.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ousl.graduation_completion.models.ALLTables;
 import com.ousl.graduation_completion.models.Application;
 import com.ousl.graduation_completion.models.StudentStatus;
@@ -10,7 +12,9 @@ import com.ousl.graduation_completion.repository.TableRepository;
 import com.ousl.graduation_completion.service.TableManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

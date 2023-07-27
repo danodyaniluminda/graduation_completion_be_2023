@@ -27,4 +27,11 @@ public class ALLTables {
     @Column(name = "valid")
     private Boolean valid;
 
+    @Column(name = "is_downloadable")
+    private Boolean download;
+
+    @Column(name = "is_uploadable")
+    private Boolean upload;
+
+
 }
