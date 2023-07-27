@@ -11,7 +11,17 @@ public class GradeCalculationLevelThreeToFiveController {
     @Autowired
     GradeCalculationLevelThreeToFiveService gradeCalculationLevelThreeToFiveService;
     @GetMapping(value = "/level_three")
-    public ResponseEntity<?> checkOpenElectiveCourse(@RequestParam("id") Long programId){
+    public ResponseEntity<?> validateLevelThreeGrade(@RequestParam("id") Long programId){
         return ResponseEntity.ok().body(gradeCalculationLevelThreeToFiveService.gradeCalculationLevelThree(programId));
+    }
+
+    @GetMapping(value = "/level_four")
+    public ResponseEntity<?> validateLevelFourGrade(@RequestParam("id") Long programId){
+        return ResponseEntity.ok().body(gradeCalculationLevelThreeToFiveService.gradeCalculationLevelFour(programId));
+    }
+
+    @GetMapping(value = "/level_five")
+    public ResponseEntity<?> validateLevelFiveGrade(@RequestParam("id") Long programId){
+        return ResponseEntity.ok().body(gradeCalculationLevelThreeToFiveService.gradeCalculationLevelFive(programId));
     }
 }
