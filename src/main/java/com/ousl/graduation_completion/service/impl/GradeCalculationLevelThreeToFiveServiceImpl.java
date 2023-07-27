@@ -168,7 +168,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                                 "                                                             GROUP BY s.application_id\n" +
                                 "                                                             HAVING SUM(s.credit) >= 30)\n" +
                                 "                                         THEN 'pass'\n" +
-                                "\n" +
+                                "           ELSE 'fail'\n" +
                                 "               END\n" +
                                 "           ELSE 'fail'\n" +
                                 "           END,\n" +
@@ -194,6 +194,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                                 "                                                             GROUP BY s.application_id\n" +
                                 "                                                             HAVING SUM(s.credit) >= 30)\n" +
                                 "                                         THEN 'Successfully Completed Level 4 Grade Validation'\n" +
+                                "                                   ELSE 'Not Completed Level 4 Grade Validation'\n" +
                                 "               END\n" +
                                 "           ELSE 'Not Completed Level 4 Grade Validation'\n" +
                                 "           END,\n" +
@@ -283,7 +284,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                                 "                                                             GROUP BY s.application_id\n" +
                                 "                                                             HAVING SUM(s.credit) >= 30)\n" +
                                 "                                         THEN 'pass'\n" +
-                                "\n" +
+                                "           ELSE 'fail'\n" +
                                 "               END\n" +
                                 "           ELSE 'fail'\n" +
                                 "           END,\n" +
@@ -309,6 +310,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
                                 "                                                             GROUP BY s.application_id\n" +
                                 "                                                             HAVING SUM(s.credit) >= 30)\n" +
                                 "                                         THEN 'Successfully Completed Level 5 Grade Validation'\n" +
+                                "                           ELSE 'Not Completed Level 5 Grade Validation'\n" +
                                 "               END\n" +
                                 "           ELSE 'Not Completed Level 5 Grade Validation'\n" +
                                 "           END,\n" +
