@@ -342,6 +342,7 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
 
 //=============================================================================================================================================================================
 
+    //Update Rule log Method
     private void updateRuleLog(Long criteriaId, int level, Iterable<? extends StudentFailedCriteriaDetail> getInsertedStudents) {
         try {
             Criterion criterion = criterionRepository.findById(criteriaId).get();
@@ -363,6 +364,8 @@ public class GradeCalculationLevelThreeToFiveServiceImpl implements GradeCalcula
         }
     }
 
+
+    //Update program sequence
     private void updateProgramSequence(Program program) {
         try {
             List<ProgramCriterion> programCriterionList = programCriterionRepository.getAllByProgramAndActive(program, true);
