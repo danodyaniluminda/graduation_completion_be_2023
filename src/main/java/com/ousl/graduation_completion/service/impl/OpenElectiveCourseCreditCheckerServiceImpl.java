@@ -447,7 +447,7 @@ public class OpenElectiveCourseCreditCheckerServiceImpl implements OpenElectiveC
 
 
 
-    private void updateProgramSequence(Program program) {
+    public void updateProgramSequence(Program program) {
         try {
             List<ProgramCriterion> programCriterionList = programCriterionRepository.getAllByProgramAndActive(program, true);
             ProgramCriterion programCriterion = programCriterionRepository.getProgramCriterionByProgramAndActive(program, true);
