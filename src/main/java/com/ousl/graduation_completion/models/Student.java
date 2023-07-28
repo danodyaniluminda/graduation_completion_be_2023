@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "student")
-public class Student {
+public class Student{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -19,7 +21,7 @@ public class Student {
     @Column(name = "application_id")
     private Long applicationId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "program_id")
     private Program program;
 
@@ -32,7 +34,7 @@ public class Student {
     @Column(name = "course_type")
     private Long courseType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "grade_map_id")
     private Grade grade;
 //    @Column(name = "grade_point_id")
@@ -49,8 +51,5 @@ public class Student {
 
     @Column(name = "valid")
     private Boolean valid;
-
-    @Column(name = "create_date")
-    private Instant createDate;
 
 }
