@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RuleLogRepository extends JpaRepository<RuleLog, Long> {}
+public interface RuleLogRepository extends JpaRepository<RuleLog, Long> {
+
+    List<RuleLog> findByStudent(Long student);
+}
