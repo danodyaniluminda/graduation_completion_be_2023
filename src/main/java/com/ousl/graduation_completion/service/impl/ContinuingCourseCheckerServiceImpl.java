@@ -89,5 +89,40 @@ public class ContinuingCourseCheckerServiceImpl implements ContinuingCourseCheck
         dataObject.setMessage("Total of Consider Data - "+totalRecord+", Pass - "+updatedCount+" recoards, Fail - " +updatedCount2+ " recoards");
         return dataObject;
     }
+
+
+    @Override
+    @Transactional
+    public DataObject critria(Integer progid) {
+        DataObject dataObject = new DataObject();
+
+        String sql1 = "INSERT INTO student_course_list (application_id, course_id, program_id)\n" +
+                "SELECT\n" +
+                "application_id,\n" +
+                "array_agg(student.course_id) AS stdcourses,\n" +
+                "program_id\n" +
+                "FROM\n" +
+                "student\n" +
+                "WHERE\n" +
+                "student.program_id = "+progid+" and student.valid = true\n" +
+                "GROUP BY\n" +
+                "application_id, program_id";
+        Query query1 = em.createNativeQuery(sql1);
+        int updatedCount = query1.executeUpdate();
+
+        String sql2 = "insert into student_with_mutual_ex_courses (application_id,mutual_ex_course_id,has_mutual_course_done)\n" +
+                "SELECT application_id,mutualexclusivecourse.id,true from student_course_list,mutualexclusivecourse\n" +
+                "WHERE student_course_list.program_id = mutualexclusivecourse.programme_id\n" +
+                "and mutualexclusivecourse.programme_id = "+progid+" \n" +
+                "and arraycontains(student_course_list .course_id,mutualexclusivecourse.mutuale_course_id)\n" +
+                "and arraycontains(student_course_list .course_id,mutualexclusivecourse.course_id)";
+        Query query2 = em.createNativeQuery(sql2);
+        int updatedCount2 = query2.executeUpdate();
+
+
+        dataObject.setStatus("SUCCESS");
+        dataObject.setMessage("Query Work");
+        return dataObject;
+    }
 }
 

@@ -22,4 +22,10 @@ public class ContinuingCourseCheckerController {
         DataObject dataObject = continuingCourseCheckerService.updateFailedOrPassedCritiaStudent(progid);
         return ResponseEntity.ok(dataObject);
     }
+
+    @GetMapping("/critria")
+    public ResponseEntity<DataObject> critria(@RequestParam("id") Integer progid) {
+        DataObject dataObject = continuingCourseCheckerService.critria(progid);
+        return ResponseEntity.ok(dataObject);
+    }
 }
