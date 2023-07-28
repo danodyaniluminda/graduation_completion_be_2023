@@ -15,14 +15,14 @@ public class StudentFailedCriteriaDetail {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "program_id")
     private Program program;
 
     @Column(name = "student_id")
     private Long student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "criteria_id")
     private Criterion criteria;
 
@@ -32,7 +32,7 @@ public class StudentFailedCriteriaDetail {
     @Column(name = "details")
     private String details;
 
-    @Column(name = "create_date")
-    private Instant createDate;
+//    @Column(name = "create_date")
+//    private Instant createDate;
 
 }
