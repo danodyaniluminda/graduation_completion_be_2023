@@ -6,4 +6,6 @@ public interface ContinuingCourseCheckerService {
     DataObject checkCntCourse(Integer progid);
 
     DataObject updateFailedOrPassedCritiaStudent(Integer progid);
+
+    DataObject critria(Integer progid);
 }
