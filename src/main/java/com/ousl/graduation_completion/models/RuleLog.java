@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,6 +28,6 @@ public class RuleLog {
     private String log;
 
     @Column(name = "create_date")
-    private Instant createDate;
+    private LocalDateTime createDate;
 
 }
