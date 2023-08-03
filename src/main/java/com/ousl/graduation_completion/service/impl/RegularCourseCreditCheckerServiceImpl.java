@@ -67,15 +67,11 @@ public class RegularCourseCreditCheckerServiceImpl implements RegularCourseCredi
             response.put("conflict", result.get("conflict").getAsBoolean());
             Gson gson = new Gson();
             JsonArray conflictExcelJA = result.getAsJsonArray("conflictExcel");
-            List<HashMap<String, Object>> conflictExcel = new ArrayList<>();
-            conflictExcelJA.forEach((conflictExcelJ) -> {
-                conflictExcel.add((HashMap<String,Object>) gson.fromJson(conflictExcelJ, HashMap.class));
-            });
+            List<HashMap<String, Object>> conflictExcel = (List<HashMap<String, Object>>) gson.fromJson(conflictExcelJA, List.class);
             response.put("conflictExcel", conflictExcel);
             //https://stackoverflow.com/questions/61169128/could-not-write-json-jsonobject-nested-exception-is-com-fasterxml-jackson-data
             response.put("status", "success");
             return response;
-
         }catch (Exception e){
             System.out.println(e.getLocalizedMessage());
             System.out.println(e.getMessage());
